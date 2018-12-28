@@ -1,124 +1,98 @@
+<!--
+We want you to make a complete website for us. We have an existing site but it more or less serves as a placeholder. I can give you full access to that so you can understand a bit about us and what we want to improve. 
+
+For all these pages, the information we can provide for you (we have it/most of it typed out; if there is something you need let me know and I can get it typed out). 
+Here is a list of things we need on the site: 
+
+Photo gallery- we have photos that I can send you
+About us/contact us page- again, the info I can send 
+About the competition- info we can provide; include hyperlink to the competition page (I can send that too)
+We have an idea to allow supporters to engage with the car itself. Basically we need a layout of the solar panels and then users can click on a specific cell and then they can buy it. When you buy a cell, you are allowed to put your personal information and put a picture of yourself. Our plan is at the end of the year to print out a huge panel with all the pictures so if somehow we can get a “pdf” or smith of this page that would be good. 
+Our donation levels are right now (not entirely formalized)
+Adopt a Cell
+Merchandise
+General Cash dontations 
+
+Now also on the donations page, add in an option to donate spare parts, equipment, etc. 
+
+Our email: planogreenteam@gmail.com
+-->
 <template>
 	<v-app light>
-		<transition name="fade">
-			<v-toolbar v-if="showToolbar" class="white" fixed>
-				<v-toolbar-title>
-					<v-layout row wrap align-center>
-						<img :src="require('@/assets/logo.png')" height="40vh"/>
-						&nbsp;
-						Plano Green Team
-					</v-layout>
-				</v-toolbar-title>
-			</v-toolbar>
-		</transition>
-		<v-content>
-			<section id="background">
-				<v-parallax :src="require('@/assets/SolarCar.jpg')" :height="viewHeight">
-					<v-layout column align-center justify-center class="white--text">
-						<h1 class="white--text mb-2 display-4 text-xs-center font-weight-light">Plano Green Team</h1>
-					</v-layout>
-				</v-parallax>
-			</section>
-
-			<section>
-				<v-layout column wrap class="my-5" align-center justify-space-between>
-					<v-flex xs12>
-						<v-container grid-list-xl>
-							<v-layout row wrap align-center justify-space-between>
-								<v-card class="elevation-0 transparent ma-2">
-									<img src="./assets/Learning.jpg"/>
-									<v-card-title class="justify-center">
-										<h1 class="mb-2 display-1">Learning</h1>
-									</v-card-title>
-								</v-card>
-								<v-card class="elevation-0 transparent ma-2">
-									<img src="./assets/Communicating.jpg"/>
-									<v-card-title class="justify-center">
-										<h1 class="mb-2 display-1">Communicating</h1>
-									</v-card-title>
-								</v-card>
-								<v-card class="elevation-0 transparent ma-2">
-									<img src="./assets/Constructing.jpg"/>
-									<v-card-title class="justify-center">
-										<h1 class="mb-2 display-1">Constructing</h1>
-									</v-card-title>
-								</v-card>
-								<v-card class="elevation-0 transparent ma-2">
-									<img src="./assets/Racing.jpg"/>
-									<v-card-title class="justify-center">
-										<h1 class="mb-2 display-1">Racing</h1>
-									</v-card-title>
-								</v-card>
-							</v-layout>
-						</v-container>
-					</v-flex>
-				</v-layout>
-			</section>
-
-			<section>
-				<v-layout column wrap class="my-5" align-center justify-space-between>
-					<v-flex xs12>
-						<v-container grid-list-xl>
-							<v-layout row align-center justify-space-between class="mb-5">
-								<img src="./assets/GreenMachine.jpg"/>
-								<v-layout align-end justify-space-between column>
-									<h1 class="display-2 mb-4">
-										The Green Machine 1.0
-									</h1>
-									<h1 style="width: 80%" class="text-xs-right">
-										Developed by students in Plano and Frisco for the 1,400 mile race from Ft. Worth, TX to Palmdale, CA
-									</h1>
-								</v-layout>
-							</v-layout>
-						</v-container>
-					</v-flex>
-				</v-layout>
-			</section>
-
-			<section>
-				<v-layout column wrap class="my-5" align-center justify-space-between>
-					<v-flex xs12>
-						<v-container grid-list-xl>
-							<v-layout row align-center justify-space-between class="mt-5">
-								<v-layout align-start justify-space-between column>
-									<h1 class="display-2 mb-4">
-										Siemens Solid Edge Award
-									</h1>
-									<h1 style="width: 80%" class="text-xs-left">
-										Presented to the Solar Car Team making the best use of Siemens Solid Edge Software at the 2018 Solar Car Challenge
-									</h1>
-								</v-layout>
-								<img src="./assets/SolidEdgeAward.jpg"/>
-							</v-layout>
-						</v-container>
-					</v-flex>
-				</v-layout>
-			</section>
-
-			<section id="endImage">
-				<v-parallax :src="require('@/assets/TeamPass.jpg')" :height="viewHeight"/>
-				<h1 class="text-xs-center">2018 Palmdale Team Passes Scruitneering</h1>
-			</section>
-		</v-content>
+		<tool-bar @change="switchPage($event)" v-if="showToolbar"/>
+		<main-page v-if="showMainPage"/>
+		<gallery-page v-if="showGalleryPage"/>
+		<about-page v-if="showAboutPage"/>
+		<competition-page v-if="showCompetitionPage"/>
+		<support-page :donatorData="donatorData" v-if="showSupportPage"/>
 	</v-app>
 </template>
 
 <script>
+import ToolBar from "./components/ToolBar.vue";
+import MainPage from "./components/MainPage.vue";
+import GalleryPage from "./components/GalleryPage.vue";
+import AboutPage from "./components/AboutPage.vue";
+import CompetitionPage from "./components/CompetitionPage.vue";
+import SupportPage from "./components/SupportPage.vue";
+
+const NUM_DONATORS = 60;
+
 export default {
 	name: 'App',
 	components: {
+		ToolBar,
+		MainPage,
+		GalleryPage,
+		AboutPage,
+		CompetitionPage,
+		SupportPage
 	},
 	data () {
 		return {
-			showToolbar: false
+			showToolbar: false,
+			showMainPage: true,
+			showGalleryPage: false,
+			showAboutPage: false,
+			showCompetitionPage: false,
+			showSupportPage: false,
+			donatorData: [] // [{'exist': bool, 'id': int, 'img': string, 'info': dictionary, 'activations': dictionary}]
 		}
 	},
 	methods: {
 		scrollHandler() {
-			if (window.pageYOffset > window.innerHeight - 100)
-				this.showToolbar = true;
-			else
+			if (this.showSupportPage == false)
+				if (window.pageYOffset > window.innerHeight)
+					this.showToolbar = true;
+				else
+					this.showToolbar = false;
+		},
+		switchPage(pageName) {
+			this.showMainPage = false;
+			this.showGalleryPage = false;
+			this.showAboutPage = false;
+			this.showCompetitionPage = false;
+			this.showSupportPage = false;
+			switch(pageName) {
+				case "homePage":
+					this.showMainPage = true;
+					break;
+				case "photoPage":
+					this.showGalleryPage = true;
+					break;
+				case "aboutPage":
+					this.showAboutPage = true;
+					break;
+				case "competitionPage":
+					this.showCompetitionPage = true;
+					break;
+				case "supportPage":
+					this.showSupportPage = true;
+					break;
+			}
+			if (pageName != "supportPage")
 				this.showToolbar = false;
+			this.$scrollTo("#background");
 		}
 	},
 	computed: {
@@ -128,6 +102,8 @@ export default {
 	},
 	created () {
 		window.addEventListener('scroll', this.scrollHandler);
+		let id = 0;
+		this.donatorData = Array.from(new Array(NUM_DONATORS), () => {return {exist: false, id: id++};});
 	},
 	destroyed () {
 		window.removeEventListener('scroll', this.scrollHandler);
@@ -139,19 +115,10 @@ export default {
 #app {
 }
 
-#background img {
-	height: 150%;
-	bottom: 25vh;
-	filter: brightness(50%);
-}
-
-#background h1 {
-	text-shadow: 0px 0px 8px #000000;
-}
-
 .fade-enter-active, .fade-leave-active {
-	transition: opacity .5s;
+	transition: opacity 1s;
 }
+
 .fade-enter, .fade-leave-to {
 	opacity: 0;
 }
